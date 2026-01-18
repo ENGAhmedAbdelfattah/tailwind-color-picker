@@ -271,6 +271,15 @@ function extractColor(className) {
         if (value)
             return value;
     }
+    const paletteMatch = className.match(/^(?:[a-z]+:)*(?:bg|text|border|ring|fill|stroke)-([a-z]+)-(\d{2,3})$/);
+    if (paletteMatch) {
+        const [, colorName, shade] = paletteMatch;
+        const palette = loadTailwindPalette();
+        const shades = palette[colorName];
+        if (shades && shades[shade]) {
+            return shades[shade];
+        }
+    }
     return null;
 }
 function extractColorFromApply(value) {
