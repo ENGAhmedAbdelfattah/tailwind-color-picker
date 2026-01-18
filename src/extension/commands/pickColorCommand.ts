@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { PickArgs } from "../types/commands";
 import { loadTailwindPalette } from "../tailwind/palette";
 import { findNearestTailwindColor } from "../tailwind/nearestColor";
+import { loadCSSThemeColors } from "../tailwind/cssThemeParser";
 
 const SHADES = [
   "50",
@@ -29,7 +30,12 @@ export function registerPickColorCommand(
         }
 
         const mode = await vscode.window.showQuickPick(
-          ["Tailwind Palette", "Arbitrary Color", "Hex → Nearest Palette"],
+          [
+            "Tailwind Palette",
+            "Theme Colors (v4)",
+            "Arbitrary Color",
+            "Hex → Nearest Palette",
+          ],
           { placeHolder: "Select color mode" }
         );
         if (!mode) {
@@ -51,6 +57,25 @@ export function registerPickColorCommand(
           }
 
           colorValue = `${color}-${shade}`;
+        } else if (mode === "Theme Colors (v4)") {
+          const themeColors = loadCSSThemeColors();
+          const colorNames = Object.keys(themeColors);
+
+          if (colorNames.length === 0) {
+            vscode.window.showWarningMessage(
+              "No theme colors found. Check your CSS theme file path in settings."
+            );
+            return;
+          }
+
+          const color = await vscode.window.showQuickPick(colorNames, {
+            placeHolder: "Select a theme color",
+          });
+          if (!color) {
+            return;
+          }
+
+          colorValue = color;
         } else if (mode === "Arbitrary Color") {
           const input = await vscode.window.showInputBox({
             prompt: "CSS Color",

@@ -109,7 +109,11 @@ Customize the extension behavior in your `settings.json`:
 
 ## ⌨️ Commands
 
-- `Tailwind Color Picker: Pick Color` - Open the visual color picker for the utility under the cursor.
+- `Tailwind Color Picker: Pick Color` - Open the visual color picker for the utility under the cursor. Supports selecting from:
+    - Standard Tailwind palette
+    - **Custom Theme Colors (v4)** extracted from your CSS
+    - Arbitrary CSS values
+    - Hex conversion to nearest palette color
 
 ---
 
