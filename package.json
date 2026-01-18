@@ -58,6 +58,11 @@
             "stroke"
           ],
           "description": "Tailwind utility classes to detect for inline preview and color picking."
+        },
+        "tailwindColorPicker.cssFilePath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to the CSS file containing Tailwind v4 theme definitions (relative to workspace root)."
         }
       }
     },

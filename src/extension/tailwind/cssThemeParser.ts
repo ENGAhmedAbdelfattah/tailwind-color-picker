@@ -157,6 +157,22 @@ export function findCSSThemeFiles(): string[] {
     return [];
   }
 
+  const config = vscode.workspace.getConfiguration("tailwindColorPicker");
+  const customPath = config.get<string>("cssFilePath");
+  const foundFiles: string[] = [];
+
+  // 1. Add custom path if set
+  if (customPath) {
+    const fullCustomPath = path.isAbsolute(customPath)
+      ? customPath
+      : path.join(workspace.uri.fsPath, customPath);
+
+    if (fs.existsSync(fullCustomPath)) {
+      foundFiles.push(fullCustomPath);
+    }
+  }
+
+  // 2. Add default possible paths
   const possiblePaths = [
     "src/tailwind.css",
     "tailwind.css",
@@ -169,12 +185,9 @@ export function findCSSThemeFiles(): string[] {
     "public/styles.css",
   ];
 
-
-  const foundFiles: string[] = [];
-
   for (const relativePath of possiblePaths) {
     const fullPath = path.join(workspace.uri.fsPath, relativePath);
-    if (fs.existsSync(fullPath)) {
+    if (fs.existsSync(fullPath) && !foundFiles.includes(fullPath)) {
       foundFiles.push(fullPath);
     }
   }

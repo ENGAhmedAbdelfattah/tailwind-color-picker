@@ -17,10 +17,10 @@ module.exports = {
       "ts-jest",
       {
         tsconfig: "tsconfig.json",
-        isolatedModules: true,
       },
     ],
   },
 
+  modulePathIgnorePatterns: ["<rootDir>/out/"],
   rootDir: ".",
 };
