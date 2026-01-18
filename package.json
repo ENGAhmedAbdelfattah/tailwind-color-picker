@@ -1,0 +1,58 @@
+{
+  "name": "tailwind-color-picker",
+  "displayName": "Tailwind Color Picker",
+  "description": "Pick Tailwind colors visually on hover",
+  "version": "0.0.1",
+  "publisher": "ahmed-abdelfattah",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/you/tailwind-color-picker"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact",
+    "onLanguage:javascriptreact"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "Tailwind Color Picker",
+      "properties": {
+        "tailwindColorPicker.utilities": {
+          "type": "array",
+          "default": [
+            "bg",
+            "text",
+            "border",
+            "ring",
+            "fill",
+            "stroke"
+          ]
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "tailwindColorPicker.pick",
+        "title": "Pick Tailwind Color"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.9",
+    "@types/vscode": "^1.108.1",
+    "typescript": "^5.3.3"
+  }
+}
