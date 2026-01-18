@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+/* Define colors WITHOUT hsl() wrapper in :root */
+:root {
+  /* Border Radius */
+  --radius: 0.5rem;
+
+  /* Light mode colors - NO hsl() wrapper */
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --primary: 120 80% 28%;
+  --primary-foreground: 210 40% 98%;
+  --primary-500: 120 64% 50%;
+  --primary-600: 120 62% 40%;
+  --primary-700: 120 60% 30%;
+  --secondary: 0 0% 32%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+  --accent: 210 40% 96.1%;
+  --destructive: 0 84.2% 60.2%;
+}
+
+/* Dark mode colors */
+.dark {
+  --background: 215 20.2% 13.7%;
+  --foreground: 215 20.2% 85.1%;
+  --primary: 210 40% 98%;
+  --secondary: 217.2 32.6% 17.5%;
+}
+
+/* Map CSS variables to Tailwind theme - ADD hsl() wrapper here */
+@theme inline {
+  /* Border radius */
+  --border-radius-sm: var(--radius);
+  --border-radius-md: var(--radius);
+  --border-radius-lg: var(--radius);
+
+  /* Colors */
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-primary-500: hsl(var(--primary-500));
+  --color-primary-600: hsl(var(--primary-600));
+  --color-primary-700: hsl(var(--primary-700));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-destructive: hsl(var(--destructive));
+}
+
+/* Base styles */
+@layer base {
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+}

@@ -1,5 +1,16 @@
 import { loadTailwindPalette } from "../tailwind/palette";
 import { resolveTheme } from "../tailwind/themeResolver";
+import { loadCSSThemeColors, resolveCSSVariable } from "../tailwind/cssThemeParser";
+
+// Cache CSS theme colors to avoid re-parsing on every call
+let cssThemeCache: ReturnType<typeof loadCSSThemeColors> | null = null;
+
+function getCSSThemeColors() {
+  if (!cssThemeCache) {
+    cssThemeCache = loadCSSThemeColors();
+  }
+  return cssThemeCache;
+}
 
 export function extractColor(className: string): string | null {
   const hexMatch = className.match(/\[(#.*?)\]/);
@@ -12,7 +23,15 @@ export function extractColor(className: string): string | null {
   if (hslMatch) return hslMatch[1];
 
   const varMatch = className.match(/\[(var\([^\]]+\))\]/);
-  if (varMatch) return varMatch[1];
+  if (varMatch) {
+    // Try to resolve CSS variable from theme
+    const themeColors = getCSSThemeColors();
+    const resolved = resolveCSSVariable(varMatch[1], themeColors);
+    if (resolved) return resolved;
+
+    // Return the var() reference as-is if we can't resolve it
+    return varMatch[1];
+  }
 
   const themeMatch = className.match(/theme\(([^)]+)\)/);
   if (themeMatch) {

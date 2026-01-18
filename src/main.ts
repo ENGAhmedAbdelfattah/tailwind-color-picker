@@ -6,12 +6,15 @@ export { extractColorFromApply } from "./extension/parsing/applyParser";
 export { resolveTheme } from "./extension/tailwind/themeResolver";
 export { loadTailwindPalette } from "./extension/tailwind/palette";
 export { findNearestTailwindColor } from "./extension/tailwind/nearestColor";
+export { loadCSSThemeColors, resolveCSSVariable, parseCSSThemeColors } from "./extension/tailwind/cssThemeParser";
+export { parseCSSVariables } from "./extension/parsing/cssVarParser";
 export { applyDecorations } from "./extension/decorations/applyDecorations";
 export {
   COLOR_REGEX,
   APPLY_REGEX,
   CLASS_REGEX,
   TW_RING_REGEX,
+  CSS_VAR_REGEX,
 } from "./extension/regex/tailwindRegex";
 
 export function activate(context: vscode.ExtensionContext): void {
@@ -24,5 +27,5 @@ export function activate(context: vscode.ExtensionContext): void {
   }
 }
 
-export function deactivate(): void {}
+export function deactivate(): void { }
 

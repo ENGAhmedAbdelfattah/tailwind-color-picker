@@ -5,8 +5,14 @@ All notable changes to the Tailwind Color Picker extension will be documented in
 
 ### Added
 
+* **Tailwind v4 CSS Theme Support**: Full support for CSS custom properties defined in `@theme inline` blocks and `:root` variables.
+* **CSS Variable Resolution**: Automatic resolution of `var(--color-name)` references in class attributes.
+* **HSL Color Parsing**: Added support for HSL/HSLA color format parsing.
+* **CSS Theme Parser**: New parser to extract and resolve color definitions from CSS files.
+* **Inline Previews for CSS Variables**: Color swatches now appear for CSS custom property definitions.
 * User settings to toggle inline previews.
 * Support for custom color configurations in tailwind.config.js.
+
 
 ## [1.0.0] - 2026-01-18
 

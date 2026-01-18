@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tailwind Color Picker Demo</title>
+  <link rel="stylesheet" href="example-theme.css">
+</head>
+<body>
+  <!-- Standard Tailwind Classes -->
+  <div class="bg-blue-500 text-white p-4">
+    Standard Tailwind color classes work perfectly
+  </div>
+
+  <!-- Arbitrary Values (JIT) -->
+  <div class="bg-[#ff6b6b] text-[#ffffff] p-4">
+    Arbitrary hex values are supported
+  </div>
+
+  <div class="bg-[rgb(100,200,150)] text-white p-4">
+    RGB values work too
+  </div>
+
+  <div class="bg-[hsl(280,60%,70%)] text-white p-4">
+    HSL values are fully supported
+  </div>
+
+  <!-- CSS Custom Properties (Tailwind v4) -->
+  <div class="bg-[var(--color-primary)] text-[var(--color-primary-foreground)] p-4">
+    CSS variables from @theme inline blocks
+  </div>
+
+  <div class="bg-[var(--color-secondary)] text-white p-4">
+    Secondary color from theme
+  </div>
+
+  <div class="bg-[var(--color-accent)] text-black p-4">
+    Accent color with automatic resolution
+  </div>
+
+  <!-- Color Shades -->
+  <div class="bg-[var(--color-primary-500)] text-white p-4">
+    Primary 500 shade
+  </div>
+
+  <div class="bg-[var(--color-primary-600)] text-white p-4">
+    Primary 600 shade
+  </div>
+
+  <div class="bg-[var(--color-primary-700)] text-white p-4">
+    Primary 700 shade
+  </div>
+
+  <!-- Border and Ring Colors -->
+  <div class="border-4 border-red-500 p-4">
+    Border colors are detected
+  </div>
+
+  <input class="ring-4 ring-blue-500 p-2" placeholder="Ring colors work">
+
+  <div class="border-[var(--color-destructive)] border-2 p-4">
+    Border with CSS variable
+  </div>
+
+  <!-- Text Colors -->
+  <p class="text-green-600">Standard text color</p>
+  <p class="text-[#9333ea]">Arbitrary text color</p>
+  <p class="text-[var(--color-foreground)]">Text with CSS variable</p>
+
+  <!-- Fill and Stroke (for SVG) -->
+  <svg class="fill-purple-500 stroke-pink-500" width="100" height="100">
+    <circle cx="50" cy="50" r="40" />
+  </svg>
+</body>
+</html>

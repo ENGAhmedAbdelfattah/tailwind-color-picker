@@ -7,6 +7,7 @@ import {
 import { extractColor } from "../parsing/classParser";
 import { extractColorFromApply } from "../parsing/applyParser";
 import { parseRingColors } from "../parsing/ringParser";
+import { parseCSSVariables } from "../parsing/cssVarParser";
 import { colorStringToVscodeColor, vscodeColorToHex } from "../utils/colorUtils";
 import { findNearestTailwindColor } from "../tailwind/nearestColor";
 import { loadTailwindPalette } from "../tailwind/palette";
@@ -26,7 +27,7 @@ export class TailwindDocumentColorProvider implements vscode.DocumentColorProvid
       const start = document.positionAt(match.index ?? 0);
       const end = document.positionAt((match.index ?? 0) + match[0].length);
       const range = new vscode.Range(start, end);
-      
+
       const colorString = extractColor(match[0]);
       if (colorString) {
         const color = colorStringToVscodeColor(colorString);
@@ -47,7 +48,7 @@ export class TailwindDocumentColorProvider implements vscode.DocumentColorProvid
       // const start = editor.document.positionAt(match.index ?? 0);
       // const end = ... match[0].length
       // It highlights the whole line "@apply text-red-500;".
-      
+
       const start = document.positionAt(match.index ?? 0);
       const end = document.positionAt((match.index ?? 0) + match[0].length);
       const range = new vscode.Range(start, end);
@@ -67,7 +68,7 @@ export class TailwindDocumentColorProvider implements vscode.DocumentColorProvid
       const start = document.positionAt(ring.index);
       const end = document.positionAt(ring.index + ring.length);
       const range = new vscode.Range(start, end);
-      
+
       const color = colorStringToVscodeColor(ring.color);
       if (color) {
         colors.push(new vscode.ColorInformation(range, color));
@@ -87,9 +88,9 @@ export class TailwindDocumentColorProvider implements vscode.DocumentColorProvid
       // match[1] is the value.
       // Offset of match[1] inside match[0].
       const valueStartIndex = match[0].indexOf(classList);
-      
+
       let currentOffset = 0;
-      
+
       // Re-scanning the classList string to find indices is safer
       let searchPos = 0;
       for (const c of classNames) {
@@ -110,6 +111,19 @@ export class TailwindDocumentColorProvider implements vscode.DocumentColorProvid
       }
     }
 
+    // 5. Handle CSS custom properties (--color-name: value;)
+    const cssVarMatches = parseCSSVariables(text);
+    for (const cssVar of cssVarMatches) {
+      const start = document.positionAt(cssVar.index);
+      const end = document.positionAt(cssVar.index + cssVar.length);
+      const range = new vscode.Range(start, end);
+
+      const color = colorStringToVscodeColor(cssVar.color);
+      if (color) {
+        colors.push(new vscode.ColorInformation(range, color));
+      }
+    }
+
     return colors;
   }
 
@@ -123,18 +137,18 @@ export class TailwindDocumentColorProvider implements vscode.DocumentColorProvid
 
     // 1. Try to find nearest Tailwind class
     const nearest = findNearestTailwindColor(hex, this.palette);
-    
+
     // Get the prefix from the original text (e.g., "text-", "bg-")
     const originalText = context.document.getText(context.range);
     const prefixMatch = originalText.match(/^([a-z]+:)*(bg|text|border|ring|fill|stroke)-/);
     const prefix = prefixMatch ? prefixMatch[0] : "";
-    
+
     if (nearest) {
       // If we have a prefix, use it with the new color name
       // e.g. text-red-500
       // If the original text was `text-[#...]`, we want `text-red-500`.
       // If the original text was `bg-blue-100`, we want `bg-red-500`.
-      
+
       if (prefix) {
         const className = `${prefix}${nearest.color}-${nearest.shade}`;
         const p = new vscode.ColorPresentation(className);
@@ -151,10 +165,10 @@ export class TailwindDocumentColorProvider implements vscode.DocumentColorProvid
       p.label = arbitrary;
       presentations.push(p);
     } else {
-        // Fallback if no prefix found (maybe it was just a color string in apply?)
-        const p = new vscode.ColorPresentation(hex);
-        p.label = hex;
-        presentations.push(p);
+      // Fallback if no prefix found (maybe it was just a color string in apply?)
+      const p = new vscode.ColorPresentation(hex);
+      p.label = hex;
+      presentations.push(p);
     }
 
     return presentations;
