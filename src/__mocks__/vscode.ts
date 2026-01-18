@@ -4,6 +4,7 @@ export const window = {
   showInputBox: jest.fn(),
   activeTextEditor: null,
   onDidChangeActiveTextEditor: jest.fn(),
+  showInformationMessage: jest.fn(),
 };
 
 export const commands = {
@@ -16,6 +17,9 @@ export const languages = {
 
 export const workspace = {
   workspaceFolders: [{ uri: { fsPath: "" } }],
+  getConfiguration: jest.fn().mockReturnValue({
+    get: jest.fn((key, defaultValue) => defaultValue),
+  }),
 };
 
 export class Range {
@@ -58,3 +62,8 @@ export class ColorPresentation {
 export const Uri = {
   file: jest.fn(),
 };
+
+export enum ColorFormat {
+  RGB = 1,
+  HEX = 2
+}

@@ -1,5 +1,18 @@
-export const COLOR_REGEX =
-  /\b((?:[a-z]+:)*)(bg|text|border|ring|fill|stroke)-(?:\[([^\]]+)\]|([a-z]+-\d{2,3})\b)/g;
+import { escapeRegex, getTailwindUtilities } from "../utils/getTailwindUtilities";
+
+export function createColorRegex(): RegExp {
+  const utilities = getTailwindUtilities()
+    .map(escapeRegex)
+    .join("|");
+
+  return new RegExp(
+    String.raw`\b((?:[a-z]+:)*)(${utilities})-(?:\[([^\]]+)\]|([a-z]+-\d{2,3})\b)`,
+    "g"
+  );
+}
+
+
+export const COLOR_REGEX = createColorRegex();
 
 export const APPLY_REGEX = /@apply\s+([^;]+);/g;
 
