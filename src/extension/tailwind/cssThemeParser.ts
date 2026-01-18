@@ -148,6 +148,8 @@ export function resolveCSSVariable(
   return value;
 }
 
+import { getExtensionConfig } from "../utils/configUtils";
+
 /**
  * Finds CSS files in the workspace
  */
@@ -157,8 +159,7 @@ export function findCSSThemeFiles(): string[] {
     return [];
   }
 
-  const config = vscode.workspace.getConfiguration("tailwindColorPicker");
-  const customPath = config.get<string>("cssFilePath");
+  const customPath = getExtensionConfig<string>("cssFilePath", "");
   const foundFiles: string[] = [];
 
   // 1. Add custom path if set
@@ -200,6 +201,7 @@ export function findCSSThemeFiles(): string[] {
  */
 let cssThemeCache: CSSThemeColors | null = null;
 let cssWatcher: vscode.FileSystemWatcher | null = null;
+let configWatcher: vscode.FileSystemWatcher | null = null;
 
 /**
  * Loads all CSS theme colors from workspace CSS files
@@ -215,6 +217,13 @@ export function loadCSSThemeColors(): CSSThemeColors {
     cssWatcher.onDidChange(() => { cssThemeCache = null; });
     cssWatcher.onDidCreate(() => { cssThemeCache = null; });
     cssWatcher.onDidDelete(() => { cssThemeCache = null; });
+  }
+
+  if (!configWatcher) {
+    configWatcher = vscode.workspace.createFileSystemWatcher("**/tailwind-color-picker.json");
+    configWatcher.onDidChange(() => { cssThemeCache = null; });
+    configWatcher.onDidCreate(() => { cssThemeCache = null; });
+    configWatcher.onDidDelete(() => { cssThemeCache = null; });
   }
 
   const cssFiles = findCSSThemeFiles();

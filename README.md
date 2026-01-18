@@ -82,16 +82,20 @@ The extension monitors a wide range of Tailwind utilities out of the box:
 
 ## ⚙️ Configuration
 
-Customize the extension behavior in your `settings.json`:
+You can customize the extension behavior either through VS Code settings or a project-level configuration file.
+
+### **Project Configuration**
+Create a `tailwind-color-picker.json` file in your workspace root to share settings with your team:
 
 ```json
 {
-  "tailwindColorPicker.utilities": [
-    "bg", "text", "border", "ring", "shadow", "..."
-  ],
-  "tailwindColorPicker.cssFilePath": "src/styles/theme.css"
+  "utilities": ["bg", "text", "border"],
+  "cssFilePath": "src/styles/theme.css"
 }
 ```
+
+### **VS Code Settings**
+If no project-level config is found, the extension falls back to your `settings.json`:
 
 - **`tailwindColorPicker.utilities`**: Add or remove utility prefixes the extension should track.
 - **`tailwindColorPicker.cssFilePath`**: Point the extension to your custom CSS theme file if it's not in a standard location.

@@ -1,9 +1,9 @@
 import * as vscode from "vscode";
 
-export function getTailwindUtilities(): string[] {
-  const config = vscode.workspace.getConfiguration("tailwindColorPicker");
+import { getExtensionConfig } from "./configUtils";
 
-  return config.get<string[]>("utilities", [
+export function getTailwindUtilities(): string[] {
+  return getExtensionConfig<string[]>("utilities", [
     "bg",
     "text",
     "decoration",
