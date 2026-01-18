@@ -2,7 +2,7 @@
   "name": "tailwind-color-picker",
   "displayName": "Tailwind Color Picker",
   "description": "Tailwind v4 color picker with inline preview and palette matching",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "AhmedAbdelfattah",
   "repository": {
     "type": "git",

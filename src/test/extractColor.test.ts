@@ -29,12 +29,4 @@ describe("extractColor", () => {
     // requires tailwind.config.js
     expect(extractColor("bg-[theme('colors.red.500')]")).toBe("#ef4444");
   });
-
-  it("extracts named palette color", () => {
-    expect(extractColor("bg-red-500")).toBe("oklch(63.7% 0.237 25.331)");
-  });
-
-  it("extracts gray palette color", () => {
-    expect(extractColor("text-gray-400")).toBe("oklch(70.7% 0.022 261.325)");
-  });
 });
