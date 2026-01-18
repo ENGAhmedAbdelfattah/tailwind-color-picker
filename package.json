@@ -6,7 +6,7 @@
   "publisher": "ahmed-abdelfattah",
   "repository": {
     "type": "git",
-    "url": "https://github.com/you/tailwind-color-picker"
+    "url": "https://github.com/ENGAhmedAbdelfattah/tailwind-color-picker"
   },
   "engines": {
     "vscode": "^1.85.0"
