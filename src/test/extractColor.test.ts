@@ -29,4 +29,12 @@ describe("extractColor", () => {
     // requires tailwind.config.js
     expect(extractColor("bg-[theme('colors.red.500')]")).toBe("#ef4444");
   });
+
+  it("extracts white", () => {
+    expect(extractColor("bg-white")).toBe("#fff");
+  });
+
+  it("extracts black", () => {
+    expect(extractColor("bg-black")).toBe("#000");
+  });
 });

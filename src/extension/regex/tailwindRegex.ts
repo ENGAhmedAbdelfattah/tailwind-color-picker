@@ -6,7 +6,7 @@ export function createColorRegex(): RegExp {
     .join("|");
 
   return new RegExp(
-    String.raw`\b((?:[a-z]+:)*)(${utilities})-(?:\[([^\]]+)\]|([a-z]+-\d{2,3})\b)`,
+    String.raw`\b((?:[a-z0-9-]+:)*)(${utilities})-(?:\[([^\]]+)\]|([a-z0-9-]+?)(?:-(\d{2,4}))?(?:\/(\d+))?\b)`,
     "g"
   );
 }

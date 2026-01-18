@@ -25,6 +25,24 @@ describe("TailwindDocumentColorProvider", () => {
       expect(colorInfo.color.blue).toBeLessThan(0.4);
     });
 
+    it("should extract white and black", () => {
+      const document = {
+        getText: () => "div { class: 'bg-white text-black' }",
+        positionAt: (offset: number) => new vscode.Position(0, offset),
+      } as any;
+
+      const colors = provider.provideDocumentColors(document, {} as any);
+      expect(colors).toHaveLength(2);
+
+      // white
+      const white = colors.find(c => c.color.red === 1 && c.color.green === 1 && c.color.blue === 1);
+      expect(white).toBeDefined();
+
+      // black
+      const black = colors.find(c => c.color.red === 0 && c.color.green === 0 && c.color.blue === 0);
+      expect(black).toBeDefined();
+    });
+
     it("should extract arbitrary colors", () => {
       const document = {
         getText: () => "div { class: 'bg-[#0000ff]' }",
