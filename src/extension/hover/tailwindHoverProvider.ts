@@ -24,21 +24,22 @@ export function createTailwindHoverProvider(): vscode.HoverProvider {
       }
 
       const text = document.getText(range);
-      const match = text.match(COLOR_REGEX);
+      // Use a non-global regex to get capture groups
+      const match = new RegExp(COLOR_REGEX.source, "").exec(text);
       if (!match) {
         return;
       }
 
-      const [, variants, utility] = match;
+      const [, , variants, utility] = match;
 
-      const args: PickArgs = { range, variants, utility };
+      const args: PickArgs = { range, variants: variants || "", utility: utility || "bg" };
 
       const md = new vscode.MarkdownString(
         `**Tailwind Color**\n\n` +
-          `\`${text}\`\n\n` +
-          `[🎨 Pick Color](command:tailwindColorPicker.pick?${encodeURIComponent(
-            JSON.stringify(args)
-          )})`
+        `\`${text}\`\n\n` +
+        `[🎨 Pick Color](command:tailwindColorPicker.pick?${encodeURIComponent(
+          JSON.stringify([args])
+        )})`
       );
       md.isTrusted = true;
 
