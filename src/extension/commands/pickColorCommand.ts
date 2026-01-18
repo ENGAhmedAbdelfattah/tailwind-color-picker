@@ -150,22 +150,38 @@ export function registerPickColorCommand(
         }
 
         let range: vscode.Range;
-        let variants = args?.variants || "";
-        let utility = args?.utility || "bg";
+        let variants = "";
+        let utility = "bg";
 
-        if (args?.range && !(args.range instanceof vscode.Range)) {
-          // Reconstruct Range from plain object
-          const rawRange = args.range as any;
-          range = new vscode.Range(
-            rawRange.start.line,
-            rawRange.start.character,
-            rawRange.end.line,
-            rawRange.end.character
-          );
-        } else if (args?.range) {
-          range = args.range;
-        } else {
-          // Fallback: try to find the color range at current position
+        // If args are provided (e.g., from Hover link)
+        if (args && typeof args === "object") {
+          const rawArgs = args as any;
+
+          // 1. Reconstruct Range
+          if (rawArgs.range) {
+            const r = rawArgs.range;
+            const startLine = typeof r.start?.line === 'number' ? r.start.line : r.start?._line;
+            const startChar = typeof r.start?.character === 'number' ? r.start.character : r.start?._character;
+            const endLine = typeof r.end?.line === 'number' ? r.end.line : r.end?._line;
+            const endChar = typeof r.end?.character === 'number' ? r.end.character : r.end?._character;
+
+            if (typeof startLine === 'number' && typeof startChar === 'number' &&
+              typeof endLine === 'number' && typeof endChar === 'number') {
+              range = new vscode.Range(startLine, startChar, endLine, endChar);
+            }
+          }
+
+          // 2. Extract variants and utility
+          if (typeof rawArgs.variants === "string") {
+            variants = rawArgs.variants;
+          }
+          if (typeof rawArgs.utility === "string") {
+            utility = rawArgs.utility;
+          }
+        }
+
+        // Fallback: if range is still missing, find it at cursor
+        if (!range!) {
           const { COLOR_REGEX } = require("../regex/tailwindRegex");
           const colorRange = editor.document.getWordRangeAtPosition(
             editor.selection.active,
@@ -177,7 +193,6 @@ export function registerPickColorCommand(
             const text = editor.document.getText(colorRange);
             const match = new RegExp(COLOR_REGEX.source, "").exec(text);
             if (match) {
-              // Groups: 1:full, 2:variants, 3:utility
               variants = match[2] || "";
               utility = match[3] || "bg";
             }

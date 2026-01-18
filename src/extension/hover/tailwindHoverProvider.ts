@@ -18,14 +18,15 @@ export const SUPPORTED_LANGUAGES = [
 export function createTailwindHoverProvider(): vscode.HoverProvider {
   return {
     provideHover(document, position) {
-      const range = document.getWordRangeAtPosition(position, COLOR_REGEX);
+      // Create a local non-global regex for word range detection
+      const localRegex = new RegExp(COLOR_REGEX.source, "");
+      const range = document.getWordRangeAtPosition(position, localRegex);
       if (!range) {
         return;
       }
 
       const text = document.getText(range);
-      // Use a non-global regex to get capture groups
-      const match = new RegExp(COLOR_REGEX.source, "").exec(text);
+      const match = localRegex.exec(text);
       if (!match) {
         return;
       }
