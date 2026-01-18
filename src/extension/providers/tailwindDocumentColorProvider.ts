@@ -21,111 +21,54 @@ export class TailwindDocumentColorProvider implements vscode.DocumentColorProvid
     token: vscode.CancellationToken
   ): vscode.ColorInformation[] {
     const text = document.getText();
-    const colors: vscode.ColorInformation[] = [];
+    const colorMap = new Map<string, vscode.ColorInformation>();
 
-    // 1. Handle COLOR_REGEX (single classes like text-red-500, bg-[#fff])
+    const addColor = (range: vscode.Range, colorString: string | null) => {
+      if (!colorString) return;
+      const color = colorStringToVscodeColor(colorString);
+      if (color) {
+        const key = `${range.start.line}:${range.start.character}:${range.end.line}:${range.end.character}`;
+        colorMap.set(key, new vscode.ColorInformation(range, color));
+      }
+    };
+
+    // 1. Handle COLOR_REGEX (standard utility classes)
     for (const match of text.matchAll(COLOR_REGEX)) {
       const start = document.positionAt(match.index ?? 0);
       const end = document.positionAt((match.index ?? 0) + match[0].length);
-      const range = new vscode.Range(start, end);
-
-      const colorString = extractColor(match[0]);
-      if (colorString) {
-        const color = colorStringToVscodeColor(colorString);
-        if (color) {
-          colors.push(new vscode.ColorInformation(range, color));
-        }
-      }
+      addColor(new vscode.Range(start, end), extractColor(match[0]));
     }
 
     // 2. Handle APPLY_REGEX
     for (const match of text.matchAll(APPLY_REGEX)) {
-      const applyValue = match[1];
-      // The match index points to "@apply ...". We want the color range.
-      // But extractColorFromApply might return just the color string.
-      // We need the range of the specific class in the apply rule if possible, 
-      // but applyDecorations logic treats the whole apply match?
-      // applyDecorations: 
-      // const start = editor.document.positionAt(match.index ?? 0);
-      // const end = ... match[0].length
-      // It highlights the whole line "@apply text-red-500;".
-
       const start = document.positionAt(match.index ?? 0);
       const end = document.positionAt((match.index ?? 0) + match[0].length);
-      const range = new vscode.Range(start, end);
-
-      const extracted = extractColorFromApply(applyValue);
-      if (extracted) {
-        const color = colorStringToVscodeColor(extracted);
-        if (color) {
-          colors.push(new vscode.ColorInformation(range, color));
-        }
-      }
+      addColor(new vscode.Range(start, end), extractColorFromApply(match[1]));
     }
 
     // 3. Handle Ring Colors
-    const ringMatches = parseRingColors(text);
-    for (const ring of ringMatches) {
+    for (const ring of parseRingColors(text)) {
       const start = document.positionAt(ring.index);
       const end = document.positionAt(ring.index + ring.length);
-      const range = new vscode.Range(start, end);
-
-      const color = colorStringToVscodeColor(ring.color);
-      if (color) {
-        colors.push(new vscode.ColorInformation(range, color));
-      }
+      addColor(new vscode.Range(start, end), ring.color);
     }
 
-    // 4. Handle className="..."
-    for (const match of text.matchAll(CLASS_REGEX)) {
-      const classList = match[1] || match[3];
-      if (!classList) continue;
-
-      const classNames = classList.split(/\s+/);
-      const matchIndex = match.index ?? 0;
-      // We need to find the offset of each class within the match
-      // match[0] is `className="... ..."`
-      // We need the start index of the value part.
-      // match[1] is the value.
-      // Offset of match[1] inside match[0].
-      const valueStartIndex = match[0].indexOf(classList);
-
-      let currentOffset = 0;
-
-      // Re-scanning the classList string to find indices is safer
-      let searchPos = 0;
-      for (const c of classNames) {
-        const indexInList = classList.indexOf(c, searchPos);
-        if (indexInList === -1) continue;
-        searchPos = indexInList + c.length;
-
-        const colorString = extractColor(c);
-        if (colorString) {
-          const color = colorStringToVscodeColor(colorString);
-          if (color) {
-            const startPos = matchIndex + valueStartIndex + indexInList;
-            const start = document.positionAt(startPos);
-            const end = document.positionAt(startPos + c.length);
-            colors.push(new vscode.ColorInformation(new vscode.Range(start, end), color));
-          }
-        }
-      }
-    }
-
-    // 5. Handle CSS custom properties (--color-name: value;)
-    const cssVarMatches = parseCSSVariables(text);
-    for (const cssVar of cssVarMatches) {
+    // 4. Handle CSS custom properties
+    for (const cssVar of parseCSSVariables(text)) {
       const start = document.positionAt(cssVar.index);
       const end = document.positionAt(cssVar.index + cssVar.length);
-      const range = new vscode.Range(start, end);
-
-      const color = colorStringToVscodeColor(cssVar.color);
-      if (color) {
-        colors.push(new vscode.ColorInformation(range, color));
-      }
+      addColor(new vscode.Range(start, end), cssVar.color);
     }
 
-    return colors;
+    const result = Array.from(colorMap.values());
+    // Final deduplication for nested ranges (e.g., if bg-white and white were both matched somehow)
+    return result.filter((c1, i) => {
+      return !result.some((c2, j) => {
+        if (i === j) return false;
+        // If c1's range is entirely inside c2's range, and they aren't identical, remove c1
+        return c2.range.contains(c1.range) && !c1.range.isEqual(c2.range);
+      });
+    });
   }
 
   public provideColorPresentations(

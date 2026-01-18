@@ -28,13 +28,35 @@ export const workspace = {
   })),
 };
 
-export class Range {
-  constructor(public start: any, public end: any) { }
-}
-
 export class Position {
   constructor(public line: number, public character: number) { }
 }
+
+export class Range {
+  constructor(public start: Position, public end: Position) { }
+
+  contains(other: Range | Position): boolean {
+    const pos = other instanceof Position ? other : other.start;
+
+    const startsAfter = pos.line > this.start.line || (pos.line === this.start.line && pos.character >= this.start.character);
+    const endsBefore = pos.line < this.end.line || (pos.line === this.end.line && pos.character <= this.end.character);
+
+    if (other instanceof Range) {
+      const otherEndsBefore = other.end.line < this.end.line || (other.end.line === this.end.line && other.end.character <= this.end.character);
+      return startsAfter && otherEndsBefore;
+    }
+
+    return startsAfter && endsBefore;
+  }
+
+  isEqual(other: Range): boolean {
+    return this.start.line === other.start.line &&
+      this.start.character === other.start.character &&
+      this.end.line === other.end.line &&
+      this.end.character === other.end.character;
+  }
+}
+
 
 export class MarkdownString {
   constructor(public value: string) { }
