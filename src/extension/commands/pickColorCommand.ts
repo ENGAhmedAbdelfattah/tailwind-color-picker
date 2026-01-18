@@ -34,25 +34,53 @@ export function registerPickColorCommand(
 
         if (mode === "Tailwind Palette") {
           const palette = loadTailwindPalette();
-          const color = await vscode.window.showQuickPick(Object.keys(palette), {
+          const { colorStringToVscodeColor, vscodeColorToHex } = require("../utils/colorUtils");
+
+          const getIcon = (colorValue: string) => {
+            const vscodeColor = colorStringToVscodeColor(colorValue);
+            if (!vscodeColor) return undefined;
+            const hex = vscodeColorToHex(vscodeColor);
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><rect width="16" height="16" rx="2" fill="${hex}"/></svg>`;
+            return vscode.Uri.parse(`data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`);
+          };
+
+          const familyItems: vscode.QuickPickItem[] = Object.entries(palette).map(([name, shades]) => {
+            // Use 500 shade as representative icon, fallback to DEFAULT
+            const repColor = shades["500"] || shades["DEFAULT"];
+            return {
+              label: name,
+              iconPath: repColor ? getIcon(repColor) : undefined
+            };
+          });
+
+          const selectedFamily = await vscode.window.showQuickPick(familyItems, {
             placeHolder: "Select a color family"
           });
-          if (!color) {
+          if (!selectedFamily) {
             return;
           }
 
-          const availableShades = Object.keys(palette[color]);
+          const color = selectedFamily.label;
+          const shades = palette[color];
+          const availableShades = Object.keys(shades);
           let shade: string | undefined;
 
           if (availableShades.length === 1 && availableShades[0] === "DEFAULT") {
             shade = "DEFAULT";
           } else {
-            shade = await vscode.window.showQuickPick(availableShades, {
+            const shadeItems: vscode.QuickPickItem[] = availableShades.map(s => ({
+              label: s,
+              description: shades[s],
+              iconPath: getIcon(shades[s])
+            }));
+
+            const selectedShade = await vscode.window.showQuickPick(shadeItems, {
               placeHolder: `Select shade for ${color}`
             });
-            if (!shade) {
+            if (!selectedShade) {
               return;
             }
+            shade = selectedShade.label;
           }
 
           colorValue = shade === "DEFAULT" ? color : `${color}-${shade}`;
@@ -67,14 +95,33 @@ export function registerPickColorCommand(
             return;
           }
 
-          const color = await vscode.window.showQuickPick(colorNames, {
+          const { colorStringToVscodeColor, vscodeColorToHex } = require("../utils/colorUtils");
+
+          const items: vscode.QuickPickItem[] = Object.entries(themeColors).map(([name, value]) => {
+            const vscodeColor = colorStringToVscodeColor(value as string);
+            let iconPath: vscode.Uri | undefined;
+
+            if (vscodeColor) {
+              const hex = vscodeColorToHex(vscodeColor);
+              const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><rect width="16" height="16" rx="2" fill="${hex}"/></svg>`;
+              iconPath = vscode.Uri.parse(`data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`);
+            }
+
+            return {
+              label: name,
+              description: value,
+              iconPath
+            };
+          });
+
+          const selected = await vscode.window.showQuickPick(items, {
             placeHolder: "Select a theme color",
           });
-          if (!color) {
+          if (!selected) {
             return;
           }
 
-          colorValue = color;
+          colorValue = selected.label;
         } else if (mode === "Arbitrary Color") {
           const input = await vscode.window.showInputBox({
             prompt: "CSS Color",

@@ -79,9 +79,6 @@ export class TailwindDocumentColorProvider implements vscode.DocumentColorProvid
     const hex = vscodeColorToHex(color);
     const presentations: vscode.ColorPresentation[] = [];
 
-    // 1. Try to find nearest Tailwind class
-    const nearest = findNearestTailwindColor(hex, this.palette);
-
     // Get the prefix from the original text (e.g., "text-", "bg-")
     const originalText = context.document.getText(context.range);
     const utilities = getTailwindUtilities()
@@ -90,6 +87,9 @@ export class TailwindDocumentColorProvider implements vscode.DocumentColorProvid
 
     const prefixMatch = originalText.match(new RegExp(`^([a-z]+:)*(${utilities})-`));
     const prefix = prefixMatch ? prefixMatch[0] : "";
+
+    // 1. Try to find nearest Tailwind class
+    const nearest = findNearestTailwindColor(hex, this.palette);
 
     if (nearest) {
       if (prefix) {
@@ -108,7 +108,36 @@ export class TailwindDocumentColorProvider implements vscode.DocumentColorProvid
       }
     }
 
-    // 2. Arbitrary value (JIT)
+    // 2. Add all Theme Colors (v4) as selectable options
+    if (prefix) {
+      const { loadCSSThemeColors } = require("../tailwind/cssThemeParser");
+      const themeColors = loadCSSThemeColors();
+
+      const themePresentations: { presentation: vscode.ColorPresentation, distance: number }[] = [];
+
+      for (const [name, value] of Object.entries(themeColors)) {
+        const themeColorVscode = colorStringToVscodeColor(value as string);
+        if (themeColorVscode) {
+          // Calculate distance to current color to sort them
+          const dr = color.red - themeColorVscode.red;
+          const dg = color.green - themeColorVscode.green;
+          const db = color.blue - themeColorVscode.blue;
+          const distance = dr * dr + dg * dg + db * db;
+
+          const className = `${prefix}${name}`;
+          const p = new vscode.ColorPresentation(className);
+          // Add a small hint that this is a theme color
+          p.label = `✨ ${className}`;
+          themePresentations.push({ presentation: p, distance });
+        }
+      }
+
+      // Sort by distance (closest first) and add to presentations
+      themePresentations.sort((a, b) => a.distance - b.distance);
+      presentations.push(...themePresentations.map(tp => tp.presentation));
+    }
+
+    // 3. Arbitrary value (JIT)
     // e.g. text-[#123456]
     if (prefix) {
       let arbitrary = `${prefix}[${hex}]`;
