@@ -1,5 +1,5 @@
 export const COLOR_REGEX =
-  /\b((?:[a-z]+:)*)(bg|text|border|ring|fill|stroke)-(?:\[([^\]]+)\]|([a-z]+-\d{2,3}))\b/;
+  /\b((?:[a-z]+:)*)(bg|text|border|ring|fill|stroke)-(?:\[([^\]]+)\]|([a-z]+-\d{2,3})\b)/g;
 
 export const APPLY_REGEX = /@apply\s+([^;]+);/g;
 

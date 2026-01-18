@@ -1,12 +1,13 @@
 import { TailwindPalette } from "./palette";
+import { colorStringToRgb } from "../utils/colorUtils";
 
 export type RGB = { r: number; g: number; b: number };
 
 export function findNearestTailwindColor(
-  hex: string,
+  colorString: string,
   palette: TailwindPalette
 ) {
-  const target = hexToRgb(hex);
+  const target = colorStringToRgb(colorString);
   if (!target) return null;
 
   let best: { color: string; shade: string } | null = null;
@@ -14,7 +15,7 @@ export function findNearestTailwindColor(
 
   for (const color in palette) {
     for (const shade in palette[color]) {
-      const rgb = hexToRgb(palette[color][shade]);
+      const rgb = colorStringToRgb(palette[color][shade]);
       if (!rgb) continue;
 
       const d = distance(target, rgb);
@@ -26,13 +27,6 @@ export function findNearestTailwindColor(
   }
 
   return best;
-}
-
-function hexToRgb(hex: string): RGB | null {
-  const m = hex.replace("#", "").match(/.{2}/g);
-  if (!m) return null;
-  const [r, g, b] = m.map((x) => parseInt(x, 16));
-  return { r, g, b };
 }
 
 function distance(a: RGB, b: RGB): number {

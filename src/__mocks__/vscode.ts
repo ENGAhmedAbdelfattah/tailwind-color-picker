@@ -35,6 +35,26 @@ export class Hover {
   constructor(public value: any) {}
 }
 
+export class Color {
+  constructor(
+    public readonly red: number,
+    public readonly green: number,
+    public readonly blue: number,
+    public readonly alpha: number
+  ) {}
+}
+
+export class ColorInformation {
+  constructor(public range: Range, public color: Color) {}
+}
+
+export class ColorPresentation {
+  label: string;
+  constructor(label: string) {
+    this.label = label;
+  }
+}
+
 export const Uri = {
   file: jest.fn(),
 };
