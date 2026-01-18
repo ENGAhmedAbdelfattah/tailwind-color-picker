@@ -2,7 +2,9 @@ import { extractColorFromApply } from "../../src/extension";
 
 describe("extractColorFromApply", () => {
   it("extracts single class", () => {
-    expect(extractColorFromApply("bg-red-500")).toBe(null);
+    expect(extractColorFromApply("bg-red-500")).toBe(
+      "oklch(63.7% 0.237 25.331)"
+    );
   });
 
   it("extracts arbitrary class", () => {
