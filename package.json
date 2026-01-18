@@ -9,7 +9,7 @@
     "url": "https://github.com/ENGAhmedAbdelfattah/tailwind-color-picker"
   },
   "engines": {
-    "vscode": "^1.108.0"
+    "vscode": "^1.103.0"
   },
   "categories": [
     "Other"
