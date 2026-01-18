@@ -52,8 +52,8 @@ describe("CSS Theme Parser", () => {
     fs.writeFileSync(tempCSSFile, cssContent, "utf-8");
     const colors = parseCSSThemeColors(tempCSSFile);
 
-    expect(colors["primary"]).toBe("120 80% 28%");
-    expect(colors["secondary"]).toBe("0 0% 32%");
+    expect(colors["primary"]).toBe("hsl(120 80% 28%)");
+    expect(colors["secondary"]).toBe("hsl(0 0% 32%)");
   });
 
   test("should resolve CSS variables", () => {
@@ -63,10 +63,10 @@ describe("CSS Theme Parser", () => {
     };
 
     const resolved1 = resolveCSSVariable("var(--primary)", themeColors);
-    expect(resolved1).toBe("hsl(120, 80%, 28%)");
+    expect(resolved1).toBe("hsl(120 80% 28%)");
 
     const resolved2 = resolveCSSVariable("var(--secondary)", themeColors);
-    expect(resolved2).toBe("hsl(0, 0%, 32%)");
+    expect(resolved2).toBe("hsl(0 0% 32%)");
   });
 
   test("should resolve CSS variables with color- prefix", () => {
@@ -76,10 +76,10 @@ describe("CSS Theme Parser", () => {
     };
 
     const resolved1 = resolveCSSVariable("var(--color-primary)", themeColors);
-    expect(resolved1).toBe("hsl(120, 80%, 28%)");
+    expect(resolved1).toBe("hsl(120 80% 28%)");
 
     const resolved2 = resolveCSSVariable("var(--color-secondary)", themeColors);
-    expect(resolved2).toBe("hsl(0, 0%, 32%)");
+    expect(resolved2).toBe("hsl(0 0% 32%)");
   });
 
   test("should return null for unknown variables", () => {
@@ -109,8 +109,8 @@ describe("CSS Theme Parser", () => {
     fs.writeFileSync(tempCSSFile, cssContent, "utf-8");
     const colors = parseCSSThemeColors(tempCSSFile);
 
-    expect(colors["primary-500"]).toBe("120 64% 50%");
-    expect(colors["primary-600"]).toBe("120 62% 40%");
-    expect(colors["primary-700"]).toBe("120 60% 30%");
+    expect(colors["primary-500"]).toBe("hsl(120 64% 50%)");
+    expect(colors["primary-600"]).toBe("hsl(120 62% 40%)");
+    expect(colors["primary-700"]).toBe("hsl(120 60% 30%)");
   });
 });

@@ -4,16 +4,6 @@ import { loadCSSThemeColors, resolveCSSVariable } from "../tailwind/cssThemePars
 import { escapeRegex, getTailwindUtilities } from "../utils/getTailwindUtilities";
 import { applyOpacity } from "../utils/colorUtils";
 
-// Cache CSS theme colors to avoid re-parsing on every call
-let cssThemeCache: ReturnType<typeof loadCSSThemeColors> | null = null;
-
-function getCSSThemeColors() {
-  if (!cssThemeCache) {
-    cssThemeCache = loadCSSThemeColors();
-  }
-  return cssThemeCache;
-}
-
 export function extractColor(className: string): string | null {
   const hexMatch = className.match(/\[(#.*?)\]/);
   if (hexMatch) return hexMatch[1];
@@ -27,7 +17,7 @@ export function extractColor(className: string): string | null {
   const varMatch = className.match(/\[(var\([^\]]+\))\]/);
   if (varMatch) {
     // Try to resolve CSS variable from theme
-    const themeColors = getCSSThemeColors();
+    const themeColors = loadCSSThemeColors();
     const resolved = resolveCSSVariable(varMatch[1], themeColors);
     if (resolved) return resolved;
 
@@ -46,9 +36,9 @@ export function extractColor(className: string): string | null {
     .join("|");
 
   // Support variants, utility, color name, optional shade, and optional opacity
-  // Matches: hover:bg-red-500, bg-white, text-black/50, border-red-500/20
+  // Matches: hover:bg-red-500, bg-white, text-black/50, border-red-500/20, bg-primary-1000
   const paletteMatch = className.match(
-    new RegExp(`^([a-z0-9-]+:)*(${utilities})-([a-z0-9-]+?)(?:-(\\d{2,3}))?(?:\\/(\\d+))?$`)
+    new RegExp(`^([a-z0-9-]+:)*(${utilities})-([a-z0-9-]+?)(?:-(\\d{2,4}))?(?:\\/(\\d+))?$`)
   );
 
   if (paletteMatch) {

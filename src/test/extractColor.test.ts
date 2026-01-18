@@ -22,7 +22,7 @@ describe("extractColor", () => {
   });
 
   it("extracts var()", () => {
-    expect(extractColor("bg-[var(--primary)]")).toBe("var(--primary)");
+    expect(extractColor("bg-[var(--not-defined)]")).toBe("var(--not-defined)");
   });
 
   it("extracts theme()", () => {
