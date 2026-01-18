@@ -1,24 +1,40 @@
 {
   "name": "tailwind-color-picker",
   "displayName": "Tailwind Color Picker",
-  "description": "Pick Tailwind colors visually on hover",
+  "description": "Tailwind v4 color picker with inline preview and palette matching",
   "version": "0.0.1",
-  "publisher": "ahmed-abdelfattah",
+  "publisher": "AhmedAbdelfattah",
   "repository": {
     "type": "git",
     "url": "https://github.com/ENGAhmedAbdelfattah/tailwind-color-picker"
   },
   "engines": {
-    "vscode": "^1.85.0"
+    "vscode": "^1.108.0"
   },
   "categories": [
     "Other"
   ],
+  "keywords": [
+    "tailwind",
+    "color",
+    "picker",
+    "tailwindcss",
+    "tailwind-v4",
+    "inline-preview"
+  ],
+  "icon": "images/icon.png",
   "activationEvents": [
+    "onLanguage:html",
+    "onLanguage:css",
+    "onLanguage:scss",
+    "onLanguage:less",
     "onLanguage:javascript",
     "onLanguage:typescript",
+    "onLanguage:javascriptreact",
     "onLanguage:typescriptreact",
-    "onLanguage:javascriptreact"
+    "onLanguage:vue",
+    "onLanguage:svelte",
+    "onCommand:tailwindColorPicker.pick"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -34,25 +50,33 @@
             "ring",
             "fill",
             "stroke"
-          ]
+          ],
+          "description": "Tailwind utility classes to detect for inline preview and color picking."
         }
       }
     },
     "commands": [
       {
         "command": "tailwindColorPicker.pick",
-        "title": "Pick Tailwind Color"
+        "title": "Pick Tailwind Color",
+        "category": "Tailwind Color Picker"
       }
     ]
   },
   "scripts": {
+    "test": "jest",
     "vscode:prepublish": "npm run build",
     "build": "tsc -p ./",
     "watch": "tsc -watch -p ./"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "@types/node": "^25.0.9",
+    "@types/tailwindcss": "^3.0.11",
     "@types/vscode": "^1.108.1",
+    "jest": "^30.2.0",
+    "tailwindcss": "^4.1.18",
+    "ts-jest": "^29.4.6",
     "typescript": "^5.3.3"
   }
 }
