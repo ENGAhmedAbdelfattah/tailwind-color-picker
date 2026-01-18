@@ -78,13 +78,17 @@ export function registerPickColorCommand(
           colorValue = `${nearest.color}-${nearest.shade}`;
         }
 
-        const finalClass = `${args.variants}${args.utility}-${colorValue}`;
+        // Replace your finalClass logic with this:
+        const variants = args?.variants || "";
+        const utility = args?.utility || "bg"; // Default to background if utility is missing
+        const range = args?.range || editor.selection; // Use current selection if no range provided
+
+        const finalClass = `${variants}${utility}-${colorValue}`;
 
         editor.edit((edit) => {
-          edit.replace(args.range, finalClass);
+          edit.replace(range, finalClass);
         });
       }
     )
   );
 }
-
