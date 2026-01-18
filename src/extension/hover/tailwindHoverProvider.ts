@@ -31,9 +31,13 @@ export function createTailwindHoverProvider(): vscode.HoverProvider {
         return;
       }
 
-      const [, , variants, utility] = match;
+      // Group 1: full match
+      // Group 2: variants prefix (e.g., "hover:")
+      // Group 3: utility (e.g., "bg")
+      const variants = match[2] || "";
+      const utility = match[3] || "bg";
 
-      const args: PickArgs = { range, variants: variants || "", utility: utility || "bg" };
+      const args: PickArgs = { range, variants, utility };
 
       const md = new vscode.MarkdownString(
         `**Tailwind Color**\n\n` +

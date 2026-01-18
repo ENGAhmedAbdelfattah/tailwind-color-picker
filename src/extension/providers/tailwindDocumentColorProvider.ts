@@ -61,12 +61,18 @@ export class TailwindDocumentColorProvider implements vscode.DocumentColorProvid
     }
 
     const result = Array.from(colorMap.values());
-    // Final deduplication for nested ranges (e.g., if bg-white and white were both matched somehow)
+    // Final deduplication for nested or identical ranges
     return result.filter((c1, i) => {
       return !result.some((c2, j) => {
         if (i === j) return false;
-        // If c1's range is entirely inside c2's range, and they aren't identical, remove c1
-        return c2.range.contains(c1.range) && !c1.range.isEqual(c2.range);
+
+        // If they are exactly the same, keep only the first one
+        if (c2.range.isEqual(c1.range)) {
+          return j < i;
+        }
+
+        // If c1's range is entirely inside c2's range, remove c1
+        return c2.range.contains(c1.range);
       });
     });
   }
