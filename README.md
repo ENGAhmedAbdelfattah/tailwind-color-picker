@@ -1,85 +1,40 @@
-# Tailwind Color Picker
+🎨 Tailwind Color Picker
+Stop guessing Hex codes. Start seeing your colors.
 
-A VS Code extension that enhances Tailwind CSS development by providing inline color previews and a powerful color picker.
+Tailwind Color Picker is a lightweight, high-performance VS Code extension designed to provide a more visual experience when working with Tailwind CSS. Whether you are using standard utility classes or custom arbitrary values, this extension ensures your workflow remains uninterrupted and your colors remain accurate.
 
-## Features
+🚀 Why Tailwind Color Picker?
+Visual Confidence: See exactly what bg-indigo-900 looks like without opening a browser.
 
-### Inline Color Preview
+Arbitrary Value Ready: Full support for Tailwind’s JIT engine. If you type bg-[#ff0000], we show the swatch.
 
-Displays a small color swatch before Tailwind color classes directly in the editor.
+Smart Selection: Don't remember the name of a shade? Use the built-in picker to find the perfect match or convert a Hex code to the closest Tailwind palette equivalent.
 
-### Color Picker Command
+Style-Sheet Power: Works flawlessly inside .css and .scss files using @apply and theme().
 
-Pick colors using:
+✨ Features at a Glance
+Inline Swatches: Small, non-intrusive color boxes next to your classes.
 
-* Tailwind Palette
-* Arbitrary Color
-* Hex → Nearest Palette
+Advanced Picker: Hover and click to change colors via a visual UI.
 
-### Full Tailwind Support
+Modern Framework Support: Built for the modern web—fully compatible with React (JSX/TSX), Vue, Svelte, and Astro.
 
-* Tailwind v3 JIT arbitrary values
-* @apply (including nested selectors and @layer)
-* theme() function
-* --tw-ring-color and --tw-ring-offset-color
+Ring & Border Support: Previews for --tw-ring-color, borders, and divide utilities.
 
-### Supported Languages
+🛠 Supported Directives
+@apply
 
-* HTML
-* CSS / SCSS / LESS
-* JavaScript / TypeScript
-* React (JSX/TSX)
-* Vue
-* Svelte
+theme('colors.red.500')
 
-## Installation
+--tw-ring-color
 
-1. Open VS Code
-2. Go to Extensions
-3. Search for Tailwind Color Picker
-4. Install and reload VS Code
+Arbitrary values: -[...]
 
-## Usage
+📦 How to Use
+Install the extension.
 
-### Inline Preview
+Open any file with Tailwind classes.
 
-Inline color preview is enabled automatically in supported file types.
+Visual swatches will appear automatically.
 
-### Color Picker
-
-Hover over a Tailwind class and click the Pick Color link.
-
-### Example
-
-<div class="bg-[#ff0000] text-white"></div>
-
-Hovering over the class shows the picker, and the swatch appears inline.
-
-## Settings (Optional)
-
-You can configure the extension from the settings panel (coming soon).
-
-## Testing
-
-This extension uses Jest for unit testing.
-
-Run tests:
-
-npm test
-
-## Contribution
-
-Contributions are welcome! If you want to contribute:
-
-1. Fork the repository
-2. Create a new branch
-3. Make your changes
-4. Submit a Pull Request
-
-## License
-
-This project is licensed under the MIT License.
-
-## Contact
-
-If you have any questions or suggestions, feel free to open an issue.
+Hover over a class and click "Pick Color" to modify it.
