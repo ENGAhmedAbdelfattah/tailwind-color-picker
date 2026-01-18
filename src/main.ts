@@ -15,7 +15,13 @@ export {
 } from "./extension/regex/tailwindRegex";
 
 export function activate(context: vscode.ExtensionContext): void {
-  activateExtension(context);
+  console.log("Tailwind Color Picker: Activating...");
+  try {
+    activateExtension(context);
+    console.log("Tailwind Color Picker: Activated successfully.");
+  } catch (error) {
+    console.error("Tailwind Color Picker: Activation failed:", error);
+  }
 }
 
 export function deactivate(): void {}

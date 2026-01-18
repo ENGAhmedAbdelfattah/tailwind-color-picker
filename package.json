@@ -2,14 +2,14 @@
   "name": "tailwind-color-picker",
   "displayName": "Tailwind Color Picker",
   "description": "Tailwind v4 color picker with inline preview and palette matching",
-  "version": "0.0.3",
+  "version": "0.0.6",
   "publisher": "AhmedAbdelfattah",
   "repository": {
     "type": "git",
     "url": "https://github.com/ENGAhmedAbdelfattah/tailwind-color-picker"
   },
   "engines": {
-    "vscode": "^1.108.0"
+    "vscode": "^1.90.0"
   },
   "categories": [
     "Other"
@@ -69,13 +69,15 @@
     "build": "tsc -p ./",
     "watch": "tsc -watch -p ./"
   },
+  "dependencies": {
+    "tailwindcss": "^4.1.18"
+  },
   "devDependencies": {
     "@types/jest": "^30.0.0",
     "@types/node": "^25.0.9",
     "@types/tailwindcss": "^3.0.11",
-    "@types/vscode": "^1.108.1",
+    "@types/vscode": "^1.90.0",
     "jest": "^30.2.0",
-    "tailwindcss": "^4.1.18",
     "ts-jest": "^29.4.6",
     "typescript": "^5.3.3"
   }

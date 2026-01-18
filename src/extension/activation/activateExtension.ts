@@ -10,8 +10,12 @@ export function activateExtension(
   const decoration = createColorDecorationType();
   context.subscriptions.push(decoration);
 
+  console.log("Tailwind Color Picker: Registering hover provider...");
   registerTailwindHoverProvider(context);
+  
+  console.log("Tailwind Color Picker: Registering pick color command...");
   registerPickColorCommand(context);
+  console.log("Tailwind Color Picker: Pick color command registered.");
 
   context.subscriptions.push(
     vscode.window.onDidChangeActiveTextEditor((editor) => {
