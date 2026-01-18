@@ -11,6 +11,7 @@ import { parseCSSVariables } from "../parsing/cssVarParser";
 import { colorStringToVscodeColor, vscodeColorToHex } from "../utils/colorUtils";
 import { findNearestTailwindColor } from "../tailwind/nearestColor";
 import { loadTailwindPalette } from "../tailwind/palette";
+import { escapeRegex, getTailwindUtilities } from "../utils/getTailwindUtilities";
 
 export class TailwindDocumentColorProvider implements vscode.DocumentColorProvider {
   private palette = loadTailwindPalette();
@@ -140,17 +141,24 @@ export class TailwindDocumentColorProvider implements vscode.DocumentColorProvid
 
     // Get the prefix from the original text (e.g., "text-", "bg-")
     const originalText = context.document.getText(context.range);
-    const prefixMatch = originalText.match(/^([a-z]+:)*(bg|text|border|ring|fill|stroke)-/);
+    const utilities = getTailwindUtilities()
+      .map(escapeRegex)
+      .join("|");
+
+    const prefixMatch = originalText.match(new RegExp(`^([a-z]+:)*(${utilities})-`));
     const prefix = prefixMatch ? prefixMatch[0] : "";
 
     if (nearest) {
-      // If we have a prefix, use it with the new color name
-      // e.g. text-red-500
-      // If the original text was `text-[#...]`, we want `text-red-500`.
-      // If the original text was `bg-blue-100`, we want `bg-red-500`.
-
       if (prefix) {
-        const className = `${prefix}${nearest.color}-${nearest.shade}`;
+        const shadePart = nearest.shade === "DEFAULT" ? "" : `-${nearest.shade}`;
+        let className = `${prefix}${nearest.color}${shadePart}`;
+
+        // Add opacity if alpha is less than 1
+        if (color.alpha < 1) {
+          const opacity = Math.round(color.alpha * 100);
+          className += `/${opacity}`;
+        }
+
         const p = new vscode.ColorPresentation(className);
         p.label = className;
         presentations.push(p);
@@ -160,14 +168,23 @@ export class TailwindDocumentColorProvider implements vscode.DocumentColorProvid
     // 2. Arbitrary value (JIT)
     // e.g. text-[#123456]
     if (prefix) {
-      const arbitrary = `${prefix}[${hex}]`;
+      let arbitrary = `${prefix}[${hex}]`;
+      if (color.alpha < 1) {
+        const opacity = Math.round(color.alpha * 100);
+        arbitrary += `/${opacity}`;
+      }
       const p = new vscode.ColorPresentation(arbitrary);
       p.label = arbitrary;
       presentations.push(p);
     } else {
-      // Fallback if no prefix found (maybe it was just a color string in apply?)
-      const p = new vscode.ColorPresentation(hex);
-      p.label = hex;
+      // Fallback if no prefix found
+      let result = hex;
+      if (color.alpha < 1) {
+        const alphaHex = Math.round(color.alpha * 255).toString(16).padStart(2, '0');
+        result += alphaHex;
+      }
+      const p = new vscode.ColorPresentation(result);
+      p.label = result;
       presentations.push(p);
     }
 

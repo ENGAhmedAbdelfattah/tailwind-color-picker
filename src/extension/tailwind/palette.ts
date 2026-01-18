@@ -7,10 +7,13 @@ export function loadTailwindPalette(): TailwindPalette {
 
   for (const [name, value] of Object.entries(colors)) {
     if (typeof value === "object" && value !== null) {
-      const shades = Object.entries(value).filter(([k]) => /^\d+$/.test(k));
+      const shades = Object.entries(value).filter(([k]) => /^\d+$/.test(k) || k === 'DEFAULT');
       if (shades.length > 0) {
         palette[name] = Object.fromEntries(shades) as Record<string, string>;
       }
+    } else if (typeof value === "string") {
+      // For colors like 'white', 'black', 'transparent'
+      palette[name] = { DEFAULT: value };
     }
   }
 

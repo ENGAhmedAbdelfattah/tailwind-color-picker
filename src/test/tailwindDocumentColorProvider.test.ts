@@ -74,5 +74,33 @@ describe("TailwindDocumentColorProvider", () => {
       // Hex for 0.1, 0.2, 0.3 -> 1a, 33, 4d
       expect(presentations.some(p => p.label.startsWith("text-["))).toBe(true);
     });
+
+    it("should return class with opacity when alpha < 1", () => {
+      const color = new vscode.Color(1, 1, 1, 0.5); // white with 50% opacity
+      const context = {
+        document: {
+          getText: () => "bg-white",
+        } as any,
+        range: new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 8)),
+      };
+
+      const presentations = provider.provideColorPresentations(color, context, {} as any);
+      const labels = presentations.map(p => p.label);
+      expect(labels).toContain("bg-white/50");
+    });
+
+    it("should return arbitrary value with opacity when alpha < 1", () => {
+      const color = new vscode.Color(1, 0, 0, 0.5); // red with 50% opacity
+      const context = {
+        document: {
+          getText: () => "bg-[#ff0000]",
+        } as any,
+        range: new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 11)),
+      };
+
+      const presentations = provider.provideColorPresentations(color, context, {} as any);
+      const labels = presentations.map(p => p.label);
+      expect(labels).toContain("bg-[#ff0000]/50");
+    });
   });
 });

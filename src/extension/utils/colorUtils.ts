@@ -161,3 +161,27 @@ function oklchToRgb(L: number, C: number, H: number, Alpha: number = 1): { r: nu
 
   return { r: red, g: green, b: blue, a: Alpha };
 }
+
+export function applyOpacity(colorString: string, opacity: string): string {
+  if (!colorString) return colorString;
+
+  // Parse opacity
+  let alpha = 1;
+  const opacityNum = parseFloat(opacity);
+  if (!isNaN(opacityNum)) {
+    alpha = opacityNum / 100;
+  }
+
+  // If color is already rgba/hsla etc., we might want to replace alpha.
+  // But for simple hex colors from palette:
+  const rgb = colorStringToRgb(colorString);
+  if (rgb) {
+    const r = Math.round(rgb.r * 255);
+    const g = Math.round(rgb.g * 255);
+    const b = Math.round(rgb.b * 255);
+    // If it's 1, we can return as is if we want, but usually we want to return the version with alpha
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+
+  return colorString;
+}

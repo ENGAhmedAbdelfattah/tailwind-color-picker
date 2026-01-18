@@ -1,6 +1,8 @@
 import { loadTailwindPalette } from "../tailwind/palette";
 import { resolveTheme } from "../tailwind/themeResolver";
 import { loadCSSThemeColors, resolveCSSVariable } from "../tailwind/cssThemeParser";
+import { escapeRegex, getTailwindUtilities } from "../utils/getTailwindUtilities";
+import { applyOpacity } from "../utils/colorUtils";
 
 // Cache CSS theme colors to avoid re-parsing on every call
 let cssThemeCache: ReturnType<typeof loadCSSThemeColors> | null = null;
@@ -39,18 +41,31 @@ export function extractColor(className: string): string | null {
     if (value) return value;
   }
 
+  const utilities = getTailwindUtilities()
+    .map(escapeRegex)
+    .join("|");
+
+  // Support variants, utility, color name, optional shade, and optional opacity
+  // Matches: hover:bg-red-500, bg-white, text-black/50, border-red-500/20
   const paletteMatch = className.match(
-    /^(?:[a-z]+:)*(?:bg|text|border|ring|fill|stroke)-([a-z]+)-(\d{2,3})$/
+    new RegExp(`^([a-z0-9-]+:)*(${utilities})-([a-z0-9-]+?)(?:-(\\d{2,3}))?(?:\\/(\\d+))?$`)
   );
+
   if (paletteMatch) {
-    const [, colorName, shade] = paletteMatch;
+    const colorName = paletteMatch[3];
+    const shade = paletteMatch[4] || "DEFAULT";
+    const opacity = paletteMatch[5];
+
     const palette = loadTailwindPalette();
-    const shades = palette[colorName];
-    if (shades && shades[shade]) {
-      return shades[shade];
+    const colorShades = palette[colorName];
+    if (colorShades && colorShades[shade]) {
+      const colorValue = colorShades[shade];
+      if (opacity) {
+        return applyOpacity(colorValue, opacity);
+      }
+      return colorValue;
     }
   }
 
   return null;
 }
-

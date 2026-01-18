@@ -6,8 +6,15 @@ export function getTailwindUtilities(): string[] {
   return config.get<string[]>("utilities", [
     "bg",
     "text",
+    "decoration",
     "border",
+    "outline",
+    "shadow",
+    "inset-shadow",
     "ring",
+    "inset-ring",
+    "accent",
+    "caret",
     "fill",
     "stroke",
   ]);
