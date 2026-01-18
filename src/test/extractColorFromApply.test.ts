@@ -1,4 +1,4 @@
-import { extractColorFromApply } from "../../src/extension";
+import { extractColorFromApply } from "../main";
 
 describe("extractColorFromApply", () => {
   it("extracts single class", () => {

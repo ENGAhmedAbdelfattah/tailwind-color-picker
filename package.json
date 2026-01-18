@@ -2,7 +2,7 @@
   "name": "tailwind-color-picker",
   "displayName": "Tailwind Color Picker",
   "description": "Tailwind v4 color picker with inline preview and palette matching",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "AhmedAbdelfattah",
   "repository": {
     "type": "git",
@@ -36,7 +36,7 @@
     "onLanguage:svelte",
     "onCommand:tailwindColorPicker.pick"
   ],
-  "main": "./out/extension.js",
+  "main": "./out/main.js",
   "contributes": {
     "configuration": {
       "title": "Tailwind Color Picker",

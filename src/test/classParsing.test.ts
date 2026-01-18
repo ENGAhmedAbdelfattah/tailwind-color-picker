@@ -1,4 +1,4 @@
-import { CLASS_REGEX } from "../../src/extension";
+import { CLASS_REGEX } from "../main";
 
 describe("CLASS_REGEX", () => {
   it("matches class attribute", () => {

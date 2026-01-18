@@ -1,4 +1,4 @@
-import { loadTailwindPalette, findNearestTailwindColor } from "../../src/extension";
+import { loadTailwindPalette, findNearestTailwindColor } from "../main";
 
 describe("Tailwind Palette", () => {
   it("loads palette", () => {

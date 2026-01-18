@@ -1,4 +1,4 @@
-import { TW_RING_REGEX } from "../../src/extension";
+import { TW_RING_REGEX } from "../main";
 
 describe("--tw-ring-color", () => {
   it("matches ring color", () => {

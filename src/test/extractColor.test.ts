@@ -1,4 +1,4 @@
-import { extractColor } from "../../src/extension";
+import { extractColor } from "../main";
 
 describe("extractColor", () => {
   it("extracts hex", () => {

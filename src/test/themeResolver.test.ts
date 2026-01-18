@@ -1,4 +1,4 @@
-import { resolveTheme } from "../../src/extension";
+import { resolveTheme } from "../main";
 
 describe("resolveTheme", () => {
   it("resolves tailwind config", () => {
