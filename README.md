@@ -8,7 +8,7 @@
 
 Tailwind Color Picker is a high-performance VS Code extension that brings visual color intelligence directly into your editor. Designed for the modern Tailwind CSS ecosystem, it provides instant inline swatches, an advanced color picker UI, and deep integration with Tailwind v4's CSS variable-based themes.
 
-![Tailwind Color Picker](images/extension.gif)
+![Tailwind Color Picker](https://github.com/ENGAhmedAbdelfattah/tailwind-color-picker/blob/main/images/extension.gif?raw=true)
 
 ---
 
@@ -57,7 +57,7 @@ Tailwind Color Picker is optimized for the new CSS-first configuration in Tailwi
 }
 ```
 
-![Tailwind v4 Theme Configuration](images/theme-config-v4.gif)
+![Tailwind v4 Theme Configuration](https://github.com/ENGAhmedAbdelfattah/tailwind-color-picker/blob/main/images/theme-config-v4.gif?raw=true)
 
 **The extension will:**
 - ✅ Resolve `var(--color-name)` references automatically.

@@ -77,8 +77,10 @@
   "scripts": {
     "test": "jest",
     "vscode:prepublish": "npm run build",
-    "build": "tsc -p ./",
-    "watch": "tsc -watch -p ./"
+    "compile": "tsc -p ./",
+    "build": "esbuild ./src/main.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node --minify",
+    "watch": "esbuild ./src/main.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node --watch",
+    "package": "npx vsce package"
   },
   "dependencies": {
     "tailwindcss": "^4.1.18"
@@ -88,6 +90,7 @@
     "@types/node": "^25.0.9",
     "@types/tailwindcss": "^3.0.11",
     "@types/vscode": "^1.90.0",
+    "esbuild": "^0.27.2",
     "jest": "^30.2.0",
     "ts-jest": "^29.4.6",
     "typescript": "^5.3.3"
